@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SelectedCounterVisual : MonoBehaviour
 {
-    [SerializeField] private ClearCounter clearCounter;
-    [SerializeField] private GameObject seletedCounterVisual;
+    [SerializeField] private BaseCounter baseCounter;
+    [SerializeField] private GameObject[] selectedCounterVisualArray;
     private void Start( )
     {
         Player.Instance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
@@ -14,7 +14,7 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void Instance_OnSelectedCounterChanged( object sender, Player.OnSelectedCounterChangedEventArgs e )
     {
-        if(e.selectedCounter == clearCounter)
+        if(e.selectedCounter == baseCounter )
         {
             ShowSelectedCounterVisual();
         }
@@ -26,10 +26,16 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void ShowSelectedCounterVisual( )
     {
-        seletedCounterVisual.SetActive( true );
+        foreach(GameObject selectedCounterVisual in selectedCounterVisualArray )
+        {
+            selectedCounterVisual.SetActive( true );
+        }
     }
     private void HideSelectedCounterVisual( )
     {
-        seletedCounterVisual.SetActive( false );
+        foreach ( GameObject selectedCounterVisual in selectedCounterVisualArray )
+        {
+            selectedCounterVisual.SetActive( false );
+        }
     }
 }

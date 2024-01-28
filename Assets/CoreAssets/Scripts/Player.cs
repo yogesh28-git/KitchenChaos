@@ -10,7 +10,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public BaseCounter selectedCounter;
     }
 
     [SerializeField] private float moveSpeed = 7f;
@@ -21,7 +21,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private Vector3 moveDir;
     private bool isWalking = false;
-    private ClearCounter selectedCounter = null;
+    private BaseCounter selectedCounter = null;
     private KitchenObject kitchenObject;
 
     private void Awake( )
@@ -59,14 +59,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
         if ( Physics.Raycast( bodyCentre, transform.forward, out RaycastHit hitInfo, interactDistance, counterLayer ) )
         {
-            if ( hitInfo.transform.TryGetComponent<ClearCounter>( out ClearCounter clearCounter ) )
+            if ( hitInfo.transform.TryGetComponent<BaseCounter>( out BaseCounter baseCounter ) )
             {
-                if ( this.selectedCounter != clearCounter )
+                if ( this.selectedCounter != baseCounter )
                 {
                     //if player has a kitchen object and the counter also has something on it
-                    if(kitchenObject == null || !clearCounter.HasKitchenObject())
+                    if(kitchenObject == null || !baseCounter.HasKitchenObject())
                     {
-                        SelectedCounterChanged( clearCounter );
+                        SelectedCounterChanged( baseCounter );
                     }
                     else
                     {
@@ -127,9 +127,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
 
-    private void SelectedCounterChanged( ClearCounter clearCounter )
+    private void SelectedCounterChanged( BaseCounter baseCounter )
     {
-        this.selectedCounter = clearCounter;
+        this.selectedCounter = baseCounter;
 
         OnSelectedCounterChanged?.Invoke( this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter } );
     }
@@ -154,7 +154,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         if(kitchenObject == null )
         {
             this.kitchenObject = _kitchenObject;
-            kitchenObject.SetKitchenObjectParent( this );
         }
     }
 
