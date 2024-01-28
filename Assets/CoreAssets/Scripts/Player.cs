@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {
 
     public static Player Instance { get; private set; }
@@ -17,10 +17,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float rotSpeed = 15f;
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask counterLayer;
+    [SerializeField] private Transform kitchenObjectHoldTransform;
 
     private Vector3 moveDir;
     private bool isWalking = false;
     private ClearCounter selectedCounter = null;
+    private KitchenObject kitchenObject;
 
     private void Awake( )
     {
@@ -40,7 +42,7 @@ public class Player : MonoBehaviour
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
     {
-        this.selectedCounter?.Interact( );
+        this.selectedCounter?.Interact( this);
     }
 
     private void Update( )
@@ -54,13 +56,22 @@ public class Player : MonoBehaviour
         float interactDistance = 1.5f;
         float bodyCentreOffset = 0.65f;
         Vector3 bodyCentre = transform.position + ( transform.up * bodyCentreOffset );
+
         if ( Physics.Raycast( bodyCentre, transform.forward, out RaycastHit hitInfo, interactDistance, counterLayer ) )
         {
             if ( hitInfo.transform.TryGetComponent<ClearCounter>( out ClearCounter clearCounter ) )
             {
                 if ( this.selectedCounter != clearCounter )
                 {
-                    SelectedCounterChanged( clearCounter );
+                    //if player has a kitchen object and the counter also has something on it
+                    if(kitchenObject == null || !clearCounter.HasKitchenObject())
+                    {
+                        SelectedCounterChanged( clearCounter );
+                    }
+                    else
+                    {
+                        SelectedCounterChanged( null );
+                    }
                 }
             }
             else
@@ -127,4 +138,35 @@ public class Player : MonoBehaviour
     {
         return isWalking;
     }
+
+    #region Interface Methods
+    public bool HasKitchenObject( )
+    {
+        return this.kitchenObject != null;
+    }
+
+    public KitchenObject GetKitchenObject( )
+    {
+        return this.kitchenObject;
+    }
+    public void SetKitchenObject( KitchenObject _kitchenObject )
+    {
+        if(kitchenObject == null )
+        {
+            this.kitchenObject = _kitchenObject;
+            kitchenObject.SetKitchenObjectParent( this );
+        }
+    }
+
+    public void ClearKitchenObject( )
+    {
+        this.kitchenObject = null;
+    }
+
+    public Transform GetKitchenObjectFollowTransform( )
+    {
+        return kitchenObjectHoldTransform;
+    }
+
+    #endregion
 }

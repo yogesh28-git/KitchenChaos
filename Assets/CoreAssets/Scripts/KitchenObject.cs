@@ -6,28 +6,19 @@ public class KitchenObject : MonoBehaviour
 
     public string Name { get { return kitchenObjectsSO.objName; } }
 
-    private ClearCounter clearCounter;
-    public KitchenObject GetKitchenObject( )
-    {
-        return this;
-    }
+    private IKitchenObjectParent kitchenObjectParent;
 
-    public void SetCounter( ClearCounter _clearCounter )
+    public void SetKitchenObjectParent( IKitchenObjectParent _kitchenObjectParent )
     {
-        if(this.clearCounter != null )
+        if(this.kitchenObjectParent != null )
         {
-            clearCounter.ClearKitchenObject( );
+            kitchenObjectParent.ClearKitchenObject( );
         }
 
-        this.clearCounter = _clearCounter;
-        transform.SetParent(_clearCounter.GetCounterTopTransform( ) );
+        this.kitchenObjectParent = _kitchenObjectParent;
+        transform.SetParent( _kitchenObjectParent.GetKitchenObjectFollowTransform( ) );
         transform.localPosition = Vector3.zero;
 
-        _clearCounter.SetKitchenObject( this );
+        _kitchenObjectParent.SetKitchenObject( this );
     }
-    public ClearCounter GetCounter()
-    {
-        return this.clearCounter;
-    }
-
 }
