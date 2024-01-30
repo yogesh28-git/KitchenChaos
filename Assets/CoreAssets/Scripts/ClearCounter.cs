@@ -6,12 +6,17 @@ public class ClearCounter : BaseCounter
     {
         if ( !HasKitchenObject( ) )
         {
-            SetKitchenObject( player.GetKitchenObject( ) ) ;
-            GetKitchenObject().SetKitchenObjectParent( this );
+            if ( player.HasKitchenObject( ) )
+            {
+                player.GetKitchenObject().SetKitchenObjectParent( this );
+            }
         }
         else
         {
-            GetKitchenObject( ).SetKitchenObjectParent( player );
+            if(!player.HasKitchenObject( ) )
+            {
+                GetKitchenObject( ).SetKitchenObjectParent( player );
+            }
         }
     }
 }
