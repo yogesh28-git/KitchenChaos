@@ -12,7 +12,7 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 
     public virtual void InteractAlt( )
     {
-        Debug.LogError( "Base Container Class Accessed" );
+        //Do Nothing
     }
 
     public bool HasKitchenObject( )
