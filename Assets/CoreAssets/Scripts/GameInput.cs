@@ -5,6 +5,7 @@ public class GameInput : MonoBehaviour
 {
 
     public event EventHandler OnInteractAction;
+    public event EventHandler OnInteractAltAction;
     private PlayerInput playerInput;
     private void Awake( )
     {
@@ -12,11 +13,17 @@ public class GameInput : MonoBehaviour
         playerInput.Player.Enable( );
 
         playerInput.Player.Interact.performed += Interact_performed;
+        playerInput.Player.InteractAlternate.performed += InteractAlternate_performed;
     }
 
     private void Interact_performed( UnityEngine.InputSystem.InputAction.CallbackContext obj )
     {
         OnInteractAction?.Invoke(this,EventArgs.Empty);
+    }
+
+    private void InteractAlternate_performed( UnityEngine.InputSystem.InputAction.CallbackContext obj )
+    {
+        OnInteractAltAction?.Invoke( this, EventArgs.Empty );
     }
 
     public Vector2 GetInputVectorNormalized( )

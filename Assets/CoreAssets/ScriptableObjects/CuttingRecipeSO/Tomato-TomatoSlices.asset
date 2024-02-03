@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a6f5621b5949f4fa7cdc85000a2100, type: 3}
   m_Name: Tomato-TomatoSlices
   m_EditorClassIdentifier: 
-  input: {fileID: 2322171656341541353, guid: 13ddbd672b0df0b45969adc1a66c21d6, type: 3}
-  output: {fileID: 2322171656341541353, guid: df39591bd70ad1345ad490457ba6e6e6, type: 3}
+  input: {fileID: 11400000, guid: 591cd046b0b5e214f9134bdcb90faaf7, type: 2}
+  output: {fileID: 11400000, guid: 1e6215788b6bf9a44aeaff2a335ae501, type: 2}

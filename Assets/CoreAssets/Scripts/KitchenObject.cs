@@ -2,11 +2,16 @@ using UnityEngine;
 
 public class KitchenObject : MonoBehaviour
 {
-    [SerializeField] private KitchenObjectsSO kitchenObjectsSO;
+    [SerializeField] private KitchenObjectSO kitchenObjectsSO;
 
     public string Name { get { return kitchenObjectsSO.objName; } }
 
     private IKitchenObjectParent kitchenObjectParent;
+
+    public KitchenObjectSO GetKitchenObjectSO( )
+    {
+        return kitchenObjectsSO;
+    }
 
     public void SetKitchenObjectParent( IKitchenObjectParent _kitchenObjectParent )
     {
@@ -20,5 +25,18 @@ public class KitchenObject : MonoBehaviour
         transform.localPosition = Vector3.zero;
 
         kitchenObjectParent.SetKitchenObject( this );
+    }
+
+    public void DestroySelf( )
+    {
+        this.kitchenObjectParent.ClearKitchenObject();
+        DestroyImmediate( this.gameObject );
+    }
+
+    public static void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent parentToAssign)
+    {
+        KitchenObject kitchenObject = Instantiate<KitchenObject>( kitchenObjectSO.prefab );
+        kitchenObject.SetKitchenObjectParent( parentToAssign );
+
     }
 }

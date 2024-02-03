@@ -38,11 +38,17 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void Start( )
     {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAltAction += GameInput_OnInteractAltAction;
     }
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
     {
         this.selectedCounter?.Interact( this);
+    }
+
+    private void GameInput_OnInteractAltAction( object sender, EventArgs e )
+    {
+        this.selectedCounter?.InteractAlt( );
     }
 
     private void Update( )
@@ -63,15 +69,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             {
                 if ( this.selectedCounter != baseCounter )
                 {
-                    //if player has a kitchen object and the counter also has something on it
-                    if(kitchenObject == null || !baseCounter.HasKitchenObject())
-                    {
-                        SelectedCounterChanged( baseCounter );
-                    }
-                    else
-                    {
-                        SelectedCounterChanged( null );
-                    }
+                    SelectedCounterChanged( baseCounter );
                 }
             }
             else

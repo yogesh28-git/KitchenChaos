@@ -5,15 +5,14 @@ public class ContainerCounter : BaseCounter
 {
     public event EventHandler OnCounterDoorOpen;
 
-    [SerializeField] private KitchenObjectsSO kitchenObjectSO;
+    [SerializeField] private KitchenObjectSO kitchenObjectSO;
 
     public override void Interact( IKitchenObjectParent player )
     {
         //spawn something and give to player only if player is empty handed
         if ( !player.HasKitchenObject( ) )
         {
-            KitchenObject kitchenObject = Instantiate<KitchenObject>( kitchenObjectSO.prefab );
-            kitchenObject.SetKitchenObjectParent( player );
+            KitchenObject.SpawnKitchenObject( kitchenObjectSO, player );
             OnCounterDoorOpen?.Invoke(this, EventArgs.Empty );
         }
     }
