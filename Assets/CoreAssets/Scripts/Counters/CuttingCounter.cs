@@ -2,16 +2,12 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter
+public class CuttingCounter : BaseCounter, IHasProgress
 {
-    public event EventHandler<OnCutProgressedEventArgs> OnCutProgressed;
     public event EventHandler OnCut;
-    public class OnCutProgressedEventArgs : EventArgs
-    {
-        public float cuttingProgressNormalized;
-    }
+    public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
-    [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOList;
+    [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
 
     private int cuttingProgress;
     public override void Interact( IKitchenObjectParent player )
@@ -23,7 +19,7 @@ public class CuttingCounter : BaseCounter
                 //Player is placing an object.
                 player.GetKitchenObject( ).SetKitchenObjectParent( this );
                 cuttingProgress = 0;
-                OnCutProgressed?.Invoke( this, new OnCutProgressedEventArgs { cuttingProgressNormalized = cuttingProgress } );
+                OnProgressChanged?.Invoke( this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = cuttingProgress } );
             }
         }
         else
@@ -41,7 +37,7 @@ public class CuttingCounter : BaseCounter
         {
             cuttingProgress++;
             int cuttingProgressMax = GetCuttingRecipeSOWithInput( GetKitchenObject( )?.GetKitchenObjectSO( ) ).cuttingProgressMax;
-            OnCutProgressed?.Invoke(this, new OnCutProgressedEventArgs { cuttingProgressNormalized = (float)cuttingProgress/cuttingProgressMax});
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = (float)cuttingProgress/cuttingProgressMax});
             OnCut?.Invoke( this, EventArgs.Empty );
 
             if(cuttingProgress >= cuttingProgressMax )
@@ -64,7 +60,7 @@ public class CuttingCounter : BaseCounter
 
     private CuttingRecipeSO GetCuttingRecipeSOWithInput(KitchenObjectSO input )
     {
-        foreach(var cuttingRecipeSO in cuttingRecipeSOList )
+        foreach(var cuttingRecipeSO in cuttingRecipeSOArray )
         {
             if(input == cuttingRecipeSO.input )
             {

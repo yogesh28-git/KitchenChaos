@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07cc2f794258dcf499fc8a2db1dc1606, type: 3}
+  m_Name: MeatPattyFrying
+  m_EditorClassIdentifier: 
+  input: {fileID: 11400000, guid: af3322ba360f3f240b661b4a7771f130, type: 2}
+  friedOutput: {fileID: 11400000, guid: 2445950bfc0372146828ffe020c01ed3, type: 2}
+  burnedOutput: {fileID: 11400000, guid: 1a0f5584ed873ff43a398aa558be5145, type: 2}
+  fryTimeMax: 4
+  burnTimeMax: 5

@@ -4,20 +4,23 @@ using UnityEngine.UI;
 public class ProgressBarUI : MonoBehaviour
 {
     [SerializeField] private Image progressBar;
-    [SerializeField] private CuttingCounter cuttingCounter;
+    [SerializeField] private GameObject hasProgressCounter;
+
+    private IHasProgress hasProgress;
 
     private void Start( )
     {
-        cuttingCounter.OnCutProgressed += CuttingCounter_OnCutProgressed;
+        hasProgress = hasProgressCounter.GetComponent<IHasProgress>();
+        hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
 
         HideProgressBar( );
     }
 
-    private void CuttingCounter_OnCutProgressed( object sender, CuttingCounter.OnCutProgressedEventArgs e )
+    private void HasProgress_OnProgressChanged( object sender, IHasProgress.OnProgressChangedEventArgs e )
     {
-        progressBar.fillAmount = e.cuttingProgressNormalized;
+        progressBar.fillAmount = e.progressNormalized;
 
-        if(progressBar.fillAmount == 0 ||  progressBar.fillAmount >= 1 )
+        if ( progressBar.fillAmount == 0 || progressBar.fillAmount >= 1 )
         {
             HideProgressBar( );
         }
