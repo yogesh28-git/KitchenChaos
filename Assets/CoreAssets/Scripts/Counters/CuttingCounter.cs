@@ -12,21 +12,37 @@ public class CuttingCounter : BaseCounter, IHasProgress
     private int cuttingProgress;
     public override void Interact( IKitchenObjectParent player )
     {
+        //Counter is empty
         if ( !HasKitchenObject( ) )
         {
+            //player carrying something and tries to place a valid item
             if ( player.HasKitchenObject( )  && HasCuttingRecipe( player.GetKitchenObject( )?.GetKitchenObjectSO( )) )
             {
-                //Player is placing an object.
                 player.GetKitchenObject( ).SetKitchenObjectParent( this );
                 cuttingProgress = 0;
                 OnProgressChanged?.Invoke( this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = cuttingProgress } );
             }
         }
+        //counter has something on it
         else
         {
+            //player is free 
             if ( !player.HasKitchenObject( ) )
             {
                 GetKitchenObject( ).SetKitchenObjectParent( player );
+            }
+            //player also carrying something
+            else
+            {
+                //Player holding a plate
+                if ( player.GetKitchenObject( ).TryGetPlate( out PlateKitchenObject plateKitchenObject ) )
+                {
+                    //Add the kitchen object that was on counter to the plate and destroy it from the counter
+                    if ( plateKitchenObject.TryAddIngredient( GetKitchenObject( ).GetKitchenObjectSO( ) ) )
+                    {
+                        GetKitchenObject( ).DestroySelf( );
+                    }
+                }
             }
         }
     }

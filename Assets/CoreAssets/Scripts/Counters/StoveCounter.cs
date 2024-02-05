@@ -52,10 +52,25 @@ public class StoveCounter : BaseCounter, IHasProgress
         }
         else
         {
+            //player is free handed
             if ( !player.HasKitchenObject( ) )
             {
                 GetKitchenObject( ).SetKitchenObjectParent( player );
                 ResetStove( );
+            }
+            //player also carrying something
+            else
+            {
+                //Player holding a plate
+                if ( player.GetKitchenObject( ).TryGetPlate( out PlateKitchenObject plateKitchenObject ) )
+                {
+                    //Add the kitchen object that was on counter to the plate and destroy it from the counter
+                    if ( plateKitchenObject.TryAddIngredient( GetKitchenObject( ).GetKitchenObjectSO( ) ) )
+                    {
+                        GetKitchenObject( ).DestroySelf( );
+                        ResetStove( );
+                    }
+                }
             }
         }
     }

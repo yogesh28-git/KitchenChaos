@@ -33,6 +33,13 @@ public class KitchenObject : MonoBehaviour
         DestroyImmediate( this.gameObject );
     }
 
+    public bool TryGetPlate( out PlateKitchenObject plateKitchenObject )
+    {
+        plateKitchenObject = this as PlateKitchenObject;
+        return plateKitchenObject != null;
+    }
+    
+
     public static void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent parentToAssign)
     {
         KitchenObject kitchenObject = Instantiate<KitchenObject>( kitchenObjectSO.prefab );
