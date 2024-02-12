@@ -83,7 +83,6 @@ public class StoveCounter : BaseCounter, IHasProgress
                 break;
             case StoveState.Frying:
                 fryTimer += Time.deltaTime;
-                Debug.Log( "FryTimer: " + fryTimer );
                 OnProgressChanged?.Invoke( this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = fryTimer/fryTimerMax } );
                 if (fryTimer > fryTimerMax )
                 {
@@ -94,7 +93,6 @@ public class StoveCounter : BaseCounter, IHasProgress
                 break;
             case StoveState.Fried:
                 burnTimer += Time.deltaTime;
-                Debug.Log( "BurnTimer: " + burnTimer );
                 OnProgressChanged?.Invoke( this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = burnTimer/burnTimerMax } );
                 if (burnTimer > burnTimerMax )
                 {
