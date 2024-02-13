@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlateCanvasUI : MonoBehaviour
 {
-    [SerializeField] private PlateIconSingleUI ingredientIconTemplate;
+    [SerializeField] private FoodIconSingleUI ingredientIconTemplate;
     [SerializeField] private PlateKitchenObject plate;
 
     private void Start( )
@@ -16,7 +16,7 @@ public class PlateCanvasUI : MonoBehaviour
 
     private void Plate_OnIngredientAdd( object sender, PlateKitchenObject.OnIngredientAddEventArgs e )
     {
-        PlateIconSingleUI iconUI = Instantiate<PlateIconSingleUI>( ingredientIconTemplate, this.transform );
+        FoodIconSingleUI iconUI = Instantiate<FoodIconSingleUI>( ingredientIconTemplate, this.transform );
         iconUI.icon.sprite = e.addedIngredient.sprite;
         iconUI.gameObject.SetActive( true );
     }
