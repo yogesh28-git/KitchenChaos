@@ -6,6 +6,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     public static Player Instance { get; private set; }
 
+    public event EventHandler OnPickUpSomething;
+
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
 
     public class OnSelectedCounterChangedEventArgs : EventArgs
@@ -43,12 +45,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
     {
-        this.selectedCounter?.Interact( this);
+        if(KitchenGameManger.Instance.isGamePlaying())
+            this.selectedCounter?.Interact( this);
     }
 
     private void GameInput_OnInteractAltAction( object sender, EventArgs e )
     {
-        this.selectedCounter?.InteractAlt( );
+        if ( KitchenGameManger.Instance.isGamePlaying( ) )
+            this.selectedCounter?.InteractAlt( );
     }
 
     private void Update( )
@@ -152,6 +156,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         if(kitchenObject == null )
         {
             this.kitchenObject = _kitchenObject;
+            OnPickUpSomething?.Invoke(this, EventArgs.Empty);
         }
     }
 

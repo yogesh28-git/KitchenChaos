@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class DeliveryManager : MonoBehaviour
 {
+    public event EventHandler OnDeliveryFailed;
+    public event EventHandler OnDeliverySuccess;
     public event EventHandler<RecipeInfoEventArgs> OnRecipeSpawned;
     public event EventHandler<RecipeInfoEventArgs> OnRecipeCompleted;
 
@@ -50,17 +52,16 @@ public class DeliveryManager : MonoBehaviour
                 RecipeSO randomRecipe = validRecipeList.recipes[Random.Range( 0, validRecipeList.recipes.Count )];
                 OnRecipeSpawned?.Invoke(this, new RecipeInfoEventArgs  { recipeSO = randomRecipe });
                 waitingRecipeList.Add( randomRecipe );
-                Debug.Log( "name: " + randomRecipe );
             }
         }
     }
 
-    bool isIngredientMatch = false;
-    bool isRecipeMatch = false;
-
     public void DeliverRecipe(PlateKitchenObject plate)
     {
-        foreach(RecipeSO recipe in waitingRecipeList )
+        bool isIngredientMatch = false;
+        bool isRecipeMatch = false;
+
+        foreach (RecipeSO recipe in waitingRecipeList )
         {
             if(recipe.ingredients.Count == plate.GetKitchenObjectSOList().Count )
             {
@@ -84,16 +85,16 @@ public class DeliveryManager : MonoBehaviour
                 }
                 if ( isRecipeMatch )
                 {
-                    Debug.Log( "Player Delivered the correct Recipe" );
                     OnRecipeCompleted?.Invoke( this, new RecipeInfoEventArgs { recipeSO = recipe } );
                     waitingRecipeList.Remove( recipe );
+                    OnDeliverySuccess?.Invoke(this, EventArgs.Empty );
                     break;
                 }
             }
         }
         if ( !isRecipeMatch )
         {
-            Debug.Log( "WRONG RECIPE" );
+            OnDeliveryFailed?.Invoke( this, EventArgs.Empty );
         }
     }
 
