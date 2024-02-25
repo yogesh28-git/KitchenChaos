@@ -1,11 +1,14 @@
 using System;
 using UnityEngine;
 
-public class KitchenGameManger : MonoBehaviour
+public class KitchenGameManager : MonoBehaviour
 {
-    public static KitchenGameManger Instance { get; private set; }  
+    public static KitchenGameManager Instance { get; private set; }  
 
     public event EventHandler OnStateChanged;
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnpaused;
+
     public enum GameState
     {
         WAITING,
@@ -19,6 +22,7 @@ public class KitchenGameManger : MonoBehaviour
     private float countDownTimer = 3f;
     private float gamePlayingTimer;
     private float gamePlayingTimerMax = 10f;
+    private bool isPaused = false;
 
     private void Awake( )
     {
@@ -32,6 +36,16 @@ public class KitchenGameManger : MonoBehaviour
         }
        
         state = GameState.WAITING;
+    }
+
+    private void Start( )
+    {
+        GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
+    }
+
+    private void GameInput_OnPauseAction( object sender, EventArgs e )
+    {
+        TogglePause( );
     }
 
     private void Update( )
@@ -87,5 +101,21 @@ public class KitchenGameManger : MonoBehaviour
     public float GetGamePlayingTimerNormalized( )
     {
         return 1 - ( gamePlayingTimer / gamePlayingTimerMax );
+    }
+
+    public void TogglePause( )
+    {
+        isPaused = !isPaused;
+
+        if ( isPaused )
+        {
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnGameUnpaused?.Invoke( this, EventArgs.Empty );
+        }
     }
 }

@@ -6,7 +6,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     public static Player Instance { get; private set; }
 
-    public event EventHandler OnPickUpSomething;
+    public static event EventHandler OnPickUpSomething;
 
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
 
@@ -17,7 +17,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotSpeed = 15f;
-    [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask counterLayer;
     [SerializeField] private Transform kitchenObjectHoldTransform;
 
@@ -39,19 +38,19 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     }
     private void Start( )
     {
-        gameInput.OnInteractAction += GameInput_OnInteractAction;
-        gameInput.OnInteractAltAction += GameInput_OnInteractAltAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.Instance.OnInteractAltAction += GameInput_OnInteractAltAction;
     }
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
     {
-        if(KitchenGameManger.Instance.isGamePlaying())
+        if(KitchenGameManager.Instance.isGamePlaying())
             this.selectedCounter?.Interact( this);
     }
 
     private void GameInput_OnInteractAltAction( object sender, EventArgs e )
     {
-        if ( KitchenGameManger.Instance.isGamePlaying( ) )
+        if ( KitchenGameManager.Instance.isGamePlaying( ) )
             this.selectedCounter?.InteractAlt( );
     }
 
@@ -93,7 +92,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     /// </summary>
     private void HandleMovement( )
     {
-        Vector2 inputVector = gameInput.GetInputVectorNormalized( );
+        Vector2 inputVector = GameInput.Instance.GetInputVectorNormalized( );
 
         moveDir = new Vector3( inputVector.x, 0f, inputVector.y );
 
@@ -139,6 +138,17 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public bool IsWalking( )
     {
         return isWalking;
+    }
+
+    private void OnDestroy( )
+    {
+        GameInput.Instance.OnInteractAction -= GameInput_OnInteractAction;
+        GameInput.Instance.OnInteractAltAction -= GameInput_OnInteractAltAction;
+    }
+
+    public static void ResetStaticData( )
+    {
+        OnPickUpSomething = null;
     }
 
     #region Interface Methods

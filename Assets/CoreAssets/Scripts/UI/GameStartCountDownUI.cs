@@ -7,18 +7,18 @@ public class GameStartCountDownUI : MonoBehaviour
 
     private void Start( )
     {
-        KitchenGameManger.Instance.OnStateChanged += KitchenGameManger_OnStateChanged;
+        KitchenGameManager.Instance.OnStateChanged += KitchenGameManger_OnStateChanged;
         Hide( );
     }
 
     private void Update( )
     {
-        countDownText.text = Mathf.Ceil( KitchenGameManger.Instance.GetCountDownTimer( ) ).ToString( );
+        countDownText.text = Mathf.Ceil( KitchenGameManager.Instance.GetCountDownTimer( ) ).ToString( );
     }
 
     private void KitchenGameManger_OnStateChanged( object sender, System.EventArgs e )
     {
-        if ( KitchenGameManger.Instance.isCountDownActive( ) )
+        if ( KitchenGameManager.Instance.isCountDownActive( ) )
         {
             Show( );
         }
@@ -35,5 +35,9 @@ public class GameStartCountDownUI : MonoBehaviour
     private void Hide( )
     {
         gameObject.SetActive( false );
+    }
+    private void OnDestroy( )
+    {
+        KitchenGameManager.Instance.OnStateChanged -= KitchenGameManger_OnStateChanged;
     }
 }

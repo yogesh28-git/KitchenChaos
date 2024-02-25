@@ -3,17 +3,36 @@ using UnityEngine;
 
 public class GameInput : MonoBehaviour
 {
+    public static GameInput Instance { get; private set; }
 
     public event EventHandler OnInteractAction;
     public event EventHandler OnInteractAltAction;
+    public event EventHandler OnPauseAction;
+
     private PlayerInput playerInput;
+
     private void Awake( )
     {
+        if(Instance == null )
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy( this.gameObject );
+        }
+
         playerInput = new PlayerInput( );
         playerInput.Player.Enable( );
 
         playerInput.Player.Interact.performed += Interact_performed;
         playerInput.Player.InteractAlternate.performed += InteractAlternate_performed;
+        playerInput.Player.Pause.performed += Pause_performed;
+    }
+
+    private void Pause_performed( UnityEngine.InputSystem.InputAction.CallbackContext obj )
+    {
+        OnPauseAction?.Invoke( this, EventArgs.Empty );
     }
 
     private void Interact_performed( UnityEngine.InputSystem.InputAction.CallbackContext obj )
@@ -51,5 +70,14 @@ public class GameInput : MonoBehaviour
         inputVector = inputVector.normalized;
 
         return inputVector;
+    }
+
+    private void OnDestroy( )
+    {
+        playerInput.Player.Interact.performed -= Interact_performed;
+        playerInput.Player.InteractAlternate.performed -= InteractAlternate_performed;
+        playerInput.Player.Pause.performed -= Pause_performed;
+
+        playerInput.Dispose( );
     }
 }

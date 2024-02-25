@@ -1,33 +1,52 @@
 using UnityEngine;
+using System;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
 
     [SerializeField] private AudioReferencesSO audioRefSO;
+    [SerializeField] private AudioSource musicAudioSource;
+
+    private float volumeMultiplier = 0.1f;
+    private float musicVolume = 0.1f;
+
+    private const string SFX_VOL = "SFX_VOL";
+    private const string MUSIC_VOL = "MUSIC_VOL";
 
     private void Awake( )
     {
         if(Instance == null )
         {
             Instance = this;
+            DontDestroyOnLoad( this.gameObject );
         }
         else
         {
             Destroy(this.gameObject);
         }
+
+        InitializeVolume();
     }
 
     public void Start( )
     {
-        DeliveryManager.Instance.OnDeliveryFailed += DeliveryManager_OnDeliveryFailed;
-        DeliveryManager.Instance.OnDeliverySuccess += DeliveryManager_OnDeliverySuccess;
+        DeliveryManager.OnDeliveryFailed += DeliveryManager_OnDeliveryFailed;
+        DeliveryManager.OnDeliverySuccess += DeliveryManager_OnDeliverySuccess;
 
         CuttingCounter.OnAnyCut += CuttingCounter_OnAnyCut;
-        Player.Instance.OnPickUpSomething += Player_OnPickUpSomething;
+        Player.OnPickUpSomething += Player_OnPickUpSomething;
         BaseCounter.OnAnyDrop += BaseCounter_OnAnyDrop;
         TrashCounter.OnAnyTrashed += TrashCounter_OnAnyTrashed;
     }
+
+    private void InitializeVolume( )
+    {
+        musicVolume = PlayerPrefs.GetFloat( MUSIC_VOL, musicVolume );
+        musicAudioSource.volume = musicVolume;
+        volumeMultiplier = PlayerPrefs.GetFloat( SFX_VOL, volumeMultiplier );
+    }
+    
 
     private void TrashCounter_OnAnyTrashed( object sender, System.EventArgs e )
     {
@@ -71,10 +90,45 @@ public class SoundManager : MonoBehaviour
 
     private void PlaySFX(AudioClip[] clipArray, Vector3 position, float volume = 1f )
     {
-        PlaySFX( clipArray[Random.Range( 0, clipArray.Length )], position );
+        PlaySFX( clipArray[UnityEngine.Random.Range( 0, clipArray.Length )], position );
     }
     private void PlaySFX( AudioClip clip, Vector3 position, float volume = 1f )
     {
-        AudioSource.PlayClipAtPoint( clip, position );
+        AudioSource.PlayClipAtPoint( clip, position, volume*volumeMultiplier );
+    }
+
+    public void ChangeSoundEffectsVolume( )
+    {
+        volumeMultiplier += 0.1f;
+
+        if(volumeMultiplier > 1.05 )
+        {
+            volumeMultiplier = 0;
+        }
+
+        PlayerPrefs.SetFloat( SFX_VOL, volumeMultiplier );
+    }
+
+    public void ChangeMusicVolume( )
+    {
+        musicVolume += 0.1f;
+
+        if ( musicVolume > 1.05 )
+        {
+            musicVolume = 0;
+        }
+
+        musicAudioSource.volume = musicVolume;
+
+        PlayerPrefs.SetFloat( MUSIC_VOL, musicVolume );
+    }
+
+    public float GetSFXVolume( )
+    {
+        return volumeMultiplier;
+    }
+    public float GetMusicVolume( )
+    {
+        return musicVolume;
     }
 }

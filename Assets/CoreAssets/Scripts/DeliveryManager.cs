@@ -6,8 +6,8 @@ using Random = UnityEngine.Random;
 
 public class DeliveryManager : MonoBehaviour
 {
-    public event EventHandler OnDeliveryFailed;
-    public event EventHandler OnDeliverySuccess;
+    public static event EventHandler OnDeliveryFailed;
+    public static event EventHandler OnDeliverySuccess;
     public event EventHandler<RecipeInfoEventArgs> OnRecipeSpawned;
     public event EventHandler<RecipeInfoEventArgs> OnRecipeCompleted;
 
@@ -107,5 +107,11 @@ public class DeliveryManager : MonoBehaviour
     public int GetDeliveredRecipeCount( )
     {
         return successfulRecipesCount;
+    }
+
+    public static void ResetStaticData( )
+    {
+        OnDeliveryFailed = null;
+        OnDeliverySuccess = null;
     }
 }

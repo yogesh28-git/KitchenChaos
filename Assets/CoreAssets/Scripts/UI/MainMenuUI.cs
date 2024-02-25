@@ -18,4 +18,9 @@ public class MainMenuUI : MonoBehaviour
             Application.Quit( );
         } );
     }
+
+    private void Start( )
+    {
+        Time.timeScale = 1.0f; 
+    }
 }

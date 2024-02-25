@@ -38,4 +38,9 @@ public class ProgressBarUI : MonoBehaviour
     {
         gameObject.SetActive( false );
     }
+
+    private void OnDestroy( )
+    {
+        hasProgress.OnProgressChanged -= HasProgress_OnProgressChanged;
+    }
 }

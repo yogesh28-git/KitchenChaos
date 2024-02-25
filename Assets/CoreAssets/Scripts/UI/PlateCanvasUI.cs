@@ -11,7 +11,6 @@ public class PlateCanvasUI : MonoBehaviour
     {
         plate.OnIngredientAdd += Plate_OnIngredientAdd;
         ingredientIconTemplate.gameObject.SetActive( false );
-        
     }
 
     private void Plate_OnIngredientAdd( object sender, PlateKitchenObject.OnIngredientAddEventArgs e )
@@ -19,6 +18,11 @@ public class PlateCanvasUI : MonoBehaviour
         FoodIconSingleUI iconUI = Instantiate<FoodIconSingleUI>( ingredientIconTemplate, this.transform );
         iconUI.icon.sprite = e.addedIngredient.sprite;
         iconUI.gameObject.SetActive( true );
+    }
+
+    private void OnDestroy( )
+    {
+        plate.OnIngredientAdd -= Plate_OnIngredientAdd;
     }
 
 }

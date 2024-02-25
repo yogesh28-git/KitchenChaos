@@ -7,4 +7,9 @@ public class TrashCounter : BaseCounter
         OnAnyTrashed?.Invoke(this, EventArgs.Empty);
         player.GetKitchenObject( )?.DestroySelf( );
     }
+
+    public new static void ResetStaticData( )
+    {
+        OnAnyTrashed = null;
+    }
 }

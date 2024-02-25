@@ -79,7 +79,11 @@ public class DeliveryManagerUI : MonoBehaviour
         return recipeVisual;
     }
 
-    
+    private void OnDestroy( )
+    {
+        DeliveryManager.Instance.OnRecipeSpawned -= DeliveryManager_OnRecipeSpawned;
+        DeliveryManager.Instance.OnRecipeCompleted -= DeliveryManager_OnRecipeCompleted;
+    }
 
 
 }

@@ -9,13 +9,13 @@ public class GameOverUI : MonoBehaviour
 
     private void Start( )
     {
-        KitchenGameManger.Instance.OnStateChanged += KitchenGameManger_OnStateChanged;
+        KitchenGameManager.Instance.OnStateChanged += KitchenGameManger_OnStateChanged;
         Hide( );
     }
 
     private void KitchenGameManger_OnStateChanged( object sender, System.EventArgs e )
     {
-        if ( KitchenGameManger.Instance.isGameOver( ) )
+        if ( KitchenGameManager.Instance.isGameOver( ) )
         {
             recipeCount.text = DeliveryManager.Instance.GetDeliveredRecipeCount().ToString();
             Show( );
@@ -33,5 +33,10 @@ public class GameOverUI : MonoBehaviour
     private void Hide( )
     {
         gameObject.SetActive( false );
+    }
+
+    private void OnDestroy( )
+    {
+        KitchenGameManager.Instance.OnStateChanged -= KitchenGameManger_OnStateChanged;
     }
 }

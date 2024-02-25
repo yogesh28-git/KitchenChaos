@@ -43,4 +43,9 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
     {
         return counterTopTransform;
     }
+    
+    public static void ResetStaticData( )
+    {
+        OnAnyDrop = null;
+    }
 }
