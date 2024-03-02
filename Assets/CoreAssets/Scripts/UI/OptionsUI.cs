@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,26 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private TextMeshProUGUI soundText;
     [SerializeField] private TextMeshProUGUI musicText;
+
+    [Space(10)]
+    [Header( "Key Bindings" )]
+    [SerializeField] private AutoSizeButton moveUp;
+    [SerializeField] private AutoSizeButton moveLeft;
+    [SerializeField] private AutoSizeButton moveDown;
+    [SerializeField] private AutoSizeButton moveRight;
+    [SerializeField] private AutoSizeButton interact;
+    [SerializeField] private AutoSizeButton interactAlt;
+    [SerializeField] private AutoSizeButton pause;
+    [Space( 5 )]
+    [SerializeField] private TextMeshProUGUI moveUpText;
+    [SerializeField] private TextMeshProUGUI moveLeftText;
+    [SerializeField] private TextMeshProUGUI moveDownText;
+    [SerializeField] private TextMeshProUGUI moveRightText;
+    [SerializeField] private TextMeshProUGUI interactText;
+    [SerializeField] private TextMeshProUGUI interactAltText;
+    [SerializeField] private TextMeshProUGUI pauseText;
+    [Space( 5 )]
+    [SerializeField] private Transform keyRebindVisual;
 
 
     private void Awake( )
@@ -32,8 +53,17 @@ public class OptionsUI : MonoBehaviour
     }
     private void Start( )
     {
+        moveUp.AddListener( ( ) => { RebindBinding( GameInput.Binding.Move_Up); } );
+        moveLeft.AddListener( ( ) => { RebindBinding( GameInput.Binding.Move_Left ); } );
+        moveDown.AddListener( ( ) => { RebindBinding( GameInput.Binding.Move_Down ); } );
+        moveRight.AddListener( ( ) => { RebindBinding( GameInput.Binding.Move_Right ); } );
+        interact.AddListener( ( ) => { RebindBinding( GameInput.Binding.Interact ); } );
+        interactAlt.AddListener( ( ) => { RebindBinding( GameInput.Binding.Interact_Alt ); } );
+        pause.AddListener( ( ) => { RebindBinding( GameInput.Binding.Pause ); } );
+
         UpdateVisual( );
         Hide( );
+        HideKeyRebindVisual( );
 
         KitchenGameManager.Instance.OnGameUnpaused += KitchenGameManager_OnGameUnpaused;
     }
@@ -50,6 +80,32 @@ public class OptionsUI : MonoBehaviour
 
         int musicVolume = (int) ( SoundManager.Instance.GetMusicVolume( ) * 10 ); //Multiply 10 to convert to whole number.
         musicText.text = "Music: " + musicVolume;
+
+        moveUpText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Move_Up );
+        moveLeftText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Move_Left );
+        moveDownText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Move_Down );
+        moveRightText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Move_Right );
+        interactText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Interact );
+        interactAltText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Interact_Alt );
+        pauseText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Pause );
+
+        moveUp.ResizeButton( );
+        moveLeft.ResizeButton( );
+        moveDown.ResizeButton( );
+        moveRight.ResizeButton( );
+        interact.ResizeButton( );
+        interactAlt.ResizeButton( );
+        pause.ResizeButton( );
+    }
+
+    private void RebindBinding( GameInput.Binding binding )
+    {
+        ShowKeyRebindVisual( );
+        GameInput.Instance.RebindBinding( binding, ( ) =>
+        {
+            UpdateVisual( );
+            HideKeyRebindVisual( );
+        } );
     }
     
     public void Show( )
@@ -60,6 +116,16 @@ public class OptionsUI : MonoBehaviour
     public void Hide( )
     {
         gameObject.SetActive ( false );
+    }
+
+    private void ShowKeyRebindVisual( )
+    {
+        keyRebindVisual.gameObject.SetActive( true );
+    }
+
+    private void HideKeyRebindVisual( )
+    {
+        keyRebindVisual.gameObject.SetActive( false );
     }
 
     private void OnDestroy( )

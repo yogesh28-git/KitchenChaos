@@ -12,11 +12,11 @@ public class AutoSizeButton : MonoBehaviour
     private RectTransform buttonRect;
     private TextMeshProUGUI buttonText;
 
-    private void Start( )
+    private void Awake( )
     {
-        button = GetComponent<Button>();
-        buttonRect = GetComponent<RectTransform>();
-        buttonText = GetComponentInChildren<TextMeshProUGUI>();
+        button = GetComponent<Button>( );
+        buttonRect = GetComponent<RectTransform>( );
+        buttonText = GetComponentInChildren<TextMeshProUGUI>( );
         ResizeButton( );
     }
 
