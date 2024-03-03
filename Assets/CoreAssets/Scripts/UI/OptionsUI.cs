@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +21,10 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private AutoSizeButton interactAlt;
     [SerializeField] private AutoSizeButton pause;
     [Space( 5 )]
+    [SerializeField] private AutoSizeButton gamepadInteract;
+    [SerializeField] private AutoSizeButton gamepadAlt;
+    [SerializeField] private AutoSizeButton gamepadPause;
+    [Space( 5 )]
     [SerializeField] private TextMeshProUGUI moveUpText;
     [SerializeField] private TextMeshProUGUI moveLeftText;
     [SerializeField] private TextMeshProUGUI moveDownText;
@@ -29,6 +32,10 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI interactText;
     [SerializeField] private TextMeshProUGUI interactAltText;
     [SerializeField] private TextMeshProUGUI pauseText;
+    [Space( 5 )]
+    [SerializeField] private TextMeshProUGUI gamepadInteractText;
+    [SerializeField] private TextMeshProUGUI gamepadAltText;
+    [SerializeField] private TextMeshProUGUI gamepadPauseText;
     [Space( 5 )]
     [SerializeField] private Transform keyRebindVisual;
 
@@ -90,6 +97,9 @@ public class OptionsUI : MonoBehaviour
         interactText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Interact );
         interactAltText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Interact_Alt );
         pauseText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Pause );
+        gamepadInteractText.text = GameInput.Instance.GetBindingText(GameInput.Binding.Gamepad_Interact );
+        gamepadAltText.text = GameInput.Instance.GetBindingText( GameInput.Binding.Gamepad_Interact_Alt );
+        gamepadPauseText.text = GameInput.Instance.GetBindingText ( GameInput.Binding.Gamepad_Pause );
 
         moveUp.ResizeButton( );
         moveLeft.ResizeButton( );
@@ -98,6 +108,9 @@ public class OptionsUI : MonoBehaviour
         interact.ResizeButton( );
         interactAlt.ResizeButton( );
         pause.ResizeButton( );
+        gamepadInteract.ResizeButton( );
+        gamepadAlt.ResizeButton( );
+        gamepadPause.ResizeButton( );
     }
 
     private void RebindBinding( GameInput.Binding binding )

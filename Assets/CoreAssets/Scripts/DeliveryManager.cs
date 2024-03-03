@@ -37,16 +37,15 @@ public class DeliveryManager : MonoBehaviour
         }
 
         waitingRecipeList = new List<RecipeSO>();
-        spawnTimer = spawnTimerMax;
     }
 
     private void Update( )
     {
-        spawnTimer -= Time.deltaTime;
+        if( KitchenGameManager.Instance.isGamePlaying( ) )
+            spawnTimer -= Time.deltaTime;
         if ( spawnTimer < 0 )
         {
             spawnTimer = spawnTimerMax;
-
             //Spawn the recipe
             if(waitingRecipeList.Count < recipeMaxCount )
             {

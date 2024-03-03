@@ -12,6 +12,8 @@ public class GameInput : MonoBehaviour
 
     private PlayerInput playerInput;
 
+    private const string PLAYER_PREFS_BINDINGS = "InputBindings";
+
     public enum Binding
     {
         Move_Up,
@@ -20,7 +22,10 @@ public class GameInput : MonoBehaviour
         Move_Right,
         Interact,
         Interact_Alt,
-        Pause
+        Pause,
+        Gamepad_Interact,
+        Gamepad_Interact_Alt,
+        Gamepad_Pause
     }
 
     private void Awake( )
@@ -35,6 +40,12 @@ public class GameInput : MonoBehaviour
         }
 
         playerInput = new PlayerInput( );
+
+        if(PlayerPrefs.HasKey( PLAYER_PREFS_BINDINGS ) )
+        {
+            playerInput.LoadBindingOverridesFromJson(PlayerPrefs.GetString( PLAYER_PREFS_BINDINGS ));
+        }
+
         playerInput.Player.Enable( );
 
         playerInput.Player.Interact.performed += Interact_performed;
@@ -112,6 +123,15 @@ public class GameInput : MonoBehaviour
             case Binding.Pause:
                 bindingName = playerInput.Player.Pause.bindings[0].ToDisplayString( );
                 break;
+            case Binding.Gamepad_Interact:
+                bindingName = playerInput.Player.Interact.bindings[1].ToDisplayString( );
+                break;
+            case Binding.Gamepad_Interact_Alt:
+                bindingName = playerInput.Player.InteractAlternate.bindings[1].ToDisplayString( );
+                break;
+            case Binding.Gamepad_Pause:
+                bindingName = playerInput.Player.Pause.bindings[1].ToDisplayString( );
+                break;
         }
 
         return bindingName;
@@ -155,12 +175,25 @@ public class GameInput : MonoBehaviour
                 inputAction = playerInput.Player.Pause;
                 bindingIndex = 0;
                 break;
+            case Binding.Gamepad_Interact:
+                inputAction = playerInput.Player.Interact;
+                bindingIndex = 1;
+                break;
+            case Binding.Gamepad_Interact_Alt:
+                inputAction = playerInput.Player.InteractAlternate;
+                bindingIndex = 1;
+                break;
+            case Binding.Gamepad_Pause:
+                inputAction = playerInput.Player.Pause;
+                bindingIndex = 1;
+                break;
         }
         inputAction.PerformInteractiveRebinding( bindingIndex ).OnComplete( (callback ) =>
         {
             onActionRebound?.Invoke( );
             callback.Dispose( );
             playerInput.Player.Enable( );
+            PlayerPrefs.SetString( PLAYER_PREFS_BINDINGS, playerInput.SaveBindingOverridesAsJson( ) );
         } ).Start();
     }
 
