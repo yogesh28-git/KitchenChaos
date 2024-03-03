@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using TMPro;
 using UnityEngine;
@@ -31,6 +32,7 @@ public class OptionsUI : MonoBehaviour
     [Space( 5 )]
     [SerializeField] private Transform keyRebindVisual;
 
+    private Action onOptionsHide;
 
     private void Awake( )
     {
@@ -108,13 +110,16 @@ public class OptionsUI : MonoBehaviour
         } );
     }
     
-    public void Show( )
+    public void Show(Action onOptionsHide)
     {
+        this.onOptionsHide = onOptionsHide;
+        musicButton.Select( );
         gameObject.SetActive( true );
     }
 
     public void Hide( )
     {
+        onOptionsHide?.Invoke( );
         gameObject.SetActive ( false );
     }
 

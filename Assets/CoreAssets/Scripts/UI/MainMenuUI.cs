@@ -21,6 +21,8 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start( )
     {
-        Time.timeScale = 1.0f; 
+        Time.timeScale = 1.0f;
+
+        playButton.Select( );
     }
 }
