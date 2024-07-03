@@ -2,8 +2,11 @@ using TMPro;
 using UnityEngine;
 
 public class GameStartCountDownUI : MonoBehaviour
-{
+{ 
     [SerializeField] private TextMeshProUGUI countDownText;
+    [SerializeField] private Animator countDownAnimator;
+    private const string COUNT_DOWN = "CountDown";
+    private int previousCountDown = 0;
 
     private void Start( )
     {
@@ -13,7 +16,14 @@ public class GameStartCountDownUI : MonoBehaviour
 
     private void Update( )
     {
-        countDownText.text = Mathf.Ceil( KitchenGameManager.Instance.GetCountDownTimer( ) ).ToString( );
+        int currentCountDown = Mathf.CeilToInt( KitchenGameManager.Instance.GetCountDownTimer( ) );
+        countDownText.text = currentCountDown.ToString( );
+        if( previousCountDown != currentCountDown )
+        {
+            previousCountDown = currentCountDown;
+            countDownAnimator.SetTrigger( COUNT_DOWN );
+            SoundManager.Instance.StartCountDownSound( );
+        }
     }
 
     private void KitchenGameManger_OnStateChanged( object sender, System.EventArgs e )

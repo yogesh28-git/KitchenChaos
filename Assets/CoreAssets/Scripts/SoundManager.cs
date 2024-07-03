@@ -87,10 +87,14 @@ public class SoundManager : MonoBehaviour
     {
         PlaySFX(audioRefSO.footStep, playerPosition, volume);
     }
+    public void StartCountDownSound( )
+    {
+        PlaySFX( audioRefSO.warning, Camera.main.transform.position );
+    }
 
     private void PlaySFX(AudioClip[] clipArray, Vector3 position, float volume = 1f )
     {
-        PlaySFX( clipArray[UnityEngine.Random.Range( 0, clipArray.Length )], position );
+        PlaySFX( clipArray[UnityEngine.Random.Range( 0, clipArray.Length )], position, volume );
     }
     private void PlaySFX( AudioClip clip, Vector3 position, float volume = 1f )
     {
