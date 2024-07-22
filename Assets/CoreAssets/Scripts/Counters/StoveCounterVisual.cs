@@ -13,13 +13,13 @@ public class StoveCounterVisual : MonoBehaviour
 
     private void StoveCounter_OnStateChanged( object sender, StoveCounter.OnStateChangedEventArgs e )
     {
-        if(e.stoveState == StoveCounter.StoveState.Frying || e.stoveState == StoveCounter.StoveState.Fried )
+        if ( e.stoveState == StoveCounter.StoveState.Frying || e.stoveState == StoveCounter.StoveState.Fried )
         {
             ShowStoveVisualEffects( );
         }
         else
         {
-            HideStoveVisualEffects();
+            HideStoveVisualEffects( );
         }
     }
 
@@ -33,4 +33,5 @@ public class StoveCounterVisual : MonoBehaviour
         stoveParticleEffect.SetActive( false );
         stoveONVisual.SetActive( false );
     }
+
 }

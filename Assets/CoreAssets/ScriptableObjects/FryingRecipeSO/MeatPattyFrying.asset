@@ -15,5 +15,5 @@ MonoBehaviour:
   input: {fileID: 11400000, guid: af3322ba360f3f240b661b4a7771f130, type: 2}
   friedOutput: {fileID: 11400000, guid: 2445950bfc0372146828ffe020c01ed3, type: 2}
   burnedOutput: {fileID: 11400000, guid: 1a0f5584ed873ff43a398aa558be5145, type: 2}
-  fryTimeMax: 4
-  burnTimeMax: 5
+  fryTimeMax: 5
+  burnTimeMax: 6

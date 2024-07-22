@@ -73,23 +73,25 @@ public class SoundManager : MonoBehaviour
 
     private void DeliveryManager_OnDeliverySuccess( object sender, System.EventArgs e )
     {
-        DeliveryCounter deliveryCounter = sender as DeliveryCounter;
-        PlaySFX(audioRefSO.deliverySuccess, deliveryCounter.transform.position );
+        PlaySFX(audioRefSO.deliverySuccess, DeliveryCounter.Instance.transform.position );
     }
 
     private void DeliveryManager_OnDeliveryFailed( object sender, System.EventArgs e )
     {
-        DeliveryCounter deliveryCounter = sender as DeliveryCounter;
-        PlaySFX( audioRefSO.deliveryFail, deliveryCounter.transform.position);
+        PlaySFX( audioRefSO.deliveryFail, DeliveryCounter.Instance.transform.position);
     }
 
     public void PlayerFootStepsSound( Vector3 playerPosition, float volume)
     {
         PlaySFX(audioRefSO.footStep, playerPosition, volume);
     }
-    public void StartCountDownSound( )
+    public void PlayCountDownSound( )
     {
         PlaySFX( audioRefSO.warning, Camera.main.transform.position );
+    }
+    public void PlayWarningSound(Vector3 position)
+    {
+        PlaySFX( audioRefSO.warning, position );
     }
 
     private void PlaySFX(AudioClip[] clipArray, Vector3 position, float volume = 1f )

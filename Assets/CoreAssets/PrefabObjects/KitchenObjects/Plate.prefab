@@ -50,6 +50,7 @@ MonoBehaviour:
   kitchenObjectsSO: {fileID: 11400000, guid: 26d4316167092d545adad3498e5e0896, type: 2}
   validIngredientsList:
   - {fileID: 11400000, guid: b631555310c1688429a9da746e300299, type: 2}
+  - {fileID: 11400000, guid: af3322ba360f3f240b661b4a7771f130, type: 2}
   - {fileID: 11400000, guid: 2445950bfc0372146828ffe020c01ed3, type: 2}
   - {fileID: 11400000, guid: 1a0f5584ed873ff43a398aa558be5145, type: 2}
   - {fileID: 11400000, guid: 02f10082db907af42b3e62b898c0804d, type: 2}
@@ -523,6 +524,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1243910341429370136}
   m_SourcePrefab: {fileID: 100100000, guid: 10e39c981f2de6441b54efde32ced8f0, type: 3}
+--- !u!1 &779090581301146531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5923181214067570580, guid: 10e39c981f2de6441b54efde32ced8f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 6412210178297234487}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6723897955633475858 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 408889407006782757, guid: 10e39c981f2de6441b54efde32ced8f0,
@@ -554,6 +561,8 @@ MonoBehaviour:
     gameObj: {fileID: 7618430976286520742}
   - kitchenObjectSO: {fileID: 11400000, guid: 1e6215788b6bf9a44aeaff2a335ae501, type: 2}
     gameObj: {fileID: 7618430974825551932}
+  - kitchenObjectSO: {fileID: 11400000, guid: af3322ba360f3f240b661b4a7771f130, type: 2}
+    gameObj: {fileID: 779090581301146531}
   plateKitchenObject: {fileID: 197414251447912380}
 --- !u!4 &6723897955633475859 stripped
 Transform:

@@ -22,7 +22,7 @@ public class GameStartCountDownUI : MonoBehaviour
         {
             previousCountDown = currentCountDown;
             countDownAnimator.SetTrigger( COUNT_DOWN );
-            SoundManager.Instance.StartCountDownSound( );
+            SoundManager.Instance.PlayCountDownSound( );
         }
     }
 
