@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,27 +22,39 @@ public class DeliveryResultUI : MonoBehaviour
         DeliveryManager.OnDeliverySuccess += DeliveryManager_OnDeliverySuccess;
         DeliveryManager.OnDeliveryFailed += DeliveryManager_OnDeliveryFailed;
 
-        this.gameObject.SetActive( false );
+        Hide( );
     }
     private void DeliveryManager_OnDeliverySuccess( object sender, System.EventArgs e )
     {
-        this.gameObject.SetActive( true );
+        Show( );
         background.color = successColor;
         messageText.text = DELIVERY_SUCCESS;
         deliveryImage.sprite = successSprite;
+        Invoke( nameof( Hide ), 2f );
     }
 
     private void DeliveryManager_OnDeliveryFailed( object sender, System.EventArgs e )
     {
-        this.gameObject.SetActive( true );
+        Show( );
         background.color = failureColor;
         messageText.text = DELIVERY_FAILED;
         deliveryImage.sprite = failureSprite;
+        Invoke( nameof( Hide ), 1f );
     }
 
     private void OnDestroy( )
     {
         DeliveryManager.OnDeliverySuccess -= DeliveryManager_OnDeliverySuccess;
         DeliveryManager.OnDeliveryFailed -= DeliveryManager_OnDeliveryFailed;
+    }
+
+    private void Show( )
+    {
+        this.gameObject.SetActive( true );
+    }
+
+    private void Hide( )
+    {
+        this.gameObject.SetActive( false );
     }
 }
