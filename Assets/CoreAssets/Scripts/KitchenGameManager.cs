@@ -41,6 +41,10 @@ public class KitchenGameManager : MonoBehaviour
     {
         GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+
+        //TESTING:
+        state = GameState.COUNT_DOWN;
+        OnStateChanged?.Invoke( this, EventArgs.Empty );
     }
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )

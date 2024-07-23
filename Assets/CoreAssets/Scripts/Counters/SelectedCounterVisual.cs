@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectedCounterVisual : MonoBehaviour
@@ -8,25 +6,25 @@ public class SelectedCounterVisual : MonoBehaviour
     [SerializeField] private GameObject[] selectedCounterVisualArray;
     private void Start( )
     {
-        Player.Instance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
-        HideSelectedCounterVisual();
+        //Player.Instance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
+        HideSelectedCounterVisual( );
     }
 
     private void Instance_OnSelectedCounterChanged( object sender, Player.OnSelectedCounterChangedEventArgs e )
     {
-        if(e.selectedCounter == baseCounter )
+        if ( e.selectedCounter == baseCounter )
         {
-            ShowSelectedCounterVisual();
+            ShowSelectedCounterVisual( );
         }
         else
         {
-            HideSelectedCounterVisual();
+            HideSelectedCounterVisual( );
         }
     }
 
     private void ShowSelectedCounterVisual( )
     {
-        foreach(GameObject selectedCounterVisual in selectedCounterVisualArray )
+        foreach ( GameObject selectedCounterVisual in selectedCounterVisualArray )
         {
             selectedCounterVisual.SetActive( true );
         }

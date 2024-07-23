@@ -1,10 +1,10 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-
-    public static Player Instance { get; private set; }
+    //public static Player Instance { get; private set; }
 
     public static event EventHandler OnPickUpSomething;
 
@@ -27,14 +27,15 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Awake( )
     {
-        if ( Instance == null )
+        /*if ( Instance == null )
         {
             Instance = this;
         }
         else
         {
             Destroy( gameObject );
-        }
+        }*/
+
     }
     private void Start( )
     {
@@ -44,8 +45,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
     {
-        if(KitchenGameManager.Instance.isGamePlaying())
-            this.selectedCounter?.Interact( this);
+        if ( KitchenGameManager.Instance.isGamePlaying( ) )
+            this.selectedCounter?.Interact( this );
     }
 
     private void GameInput_OnInteractAltAction( object sender, EventArgs e )
@@ -56,6 +57,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Update( )
     {
+        if ( !IsOwner )
+            return;
+
         HandleMovement( );
         HandleInteractions( );
     }
@@ -163,10 +167,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     }
     public void SetKitchenObject( KitchenObject _kitchenObject )
     {
-        if(kitchenObject == null )
+        if ( kitchenObject == null )
         {
             this.kitchenObject = _kitchenObject;
-            OnPickUpSomething?.Invoke(this, EventArgs.Empty);
+            OnPickUpSomething?.Invoke( this, EventArgs.Empty );
         }
     }
 

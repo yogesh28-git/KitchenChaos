@@ -13,10 +13,10 @@ public class PlayerSounds : MonoBehaviour
         {
             footStepTimer = 0;
 
-            if ( Player.Instance.IsWalking( ) )
+            /*if ( Player.Instance.IsWalking( ) )
             {
                 SoundManager.Instance.PlayerFootStepsSound( Player.Instance.transform.position, volume );
-            } 
+            } */
         }
     }
 }

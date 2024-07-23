@@ -62,7 +62,7 @@ public class SoundManager : MonoBehaviour
 
     private void Player_OnPickUpSomething( object sender, System.EventArgs e )
     {
-        PlaySFX( audioRefSO.foodPickup, Player.Instance.transform.position );
+        //PlaySFX( audioRefSO.foodPickup, Player.Instance.transform.position );
     }
 
     private void CuttingCounter_OnAnyCut( object sender, System.EventArgs e )

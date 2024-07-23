@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class TutorialUI : MonoBehaviour
 {
-    [Header("Key Names")]
+    [Header( "Key Names" )]
     [SerializeField] private TextMeshProUGUI moveUpText;
     [SerializeField] private TextMeshProUGUI moveLeftText;
     [SerializeField] private TextMeshProUGUI moveDownText;

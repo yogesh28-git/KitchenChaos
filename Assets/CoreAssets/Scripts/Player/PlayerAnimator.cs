@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerAnimator : MonoBehaviour
+public class PlayerAnimator : NetworkBehaviour
 {
     [SerializeField] private Animator playerAnimator;
     [SerializeField] private Player player;
@@ -9,6 +10,9 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Update( )
     {
-        playerAnimator.SetBool(IS_WALKING, player.IsWalking());
+        if ( !IsOwner )
+            return;
+
+        playerAnimator.SetBool( IS_WALKING, player.IsWalking( ) );
     }
 }
