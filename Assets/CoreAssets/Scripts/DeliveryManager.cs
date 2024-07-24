@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DeliveryManager : MonoBehaviour
+public class DeliveryManager : NetworkBehaviour
 {
     public static event EventHandler OnDeliveryFailed;
     public static event EventHandler OnDeliverySuccess;
@@ -20,7 +20,7 @@ public class DeliveryManager : MonoBehaviour
     [SerializeField] private RecipeListSO validRecipeList;
     private List<RecipeSO> waitingRecipeList;
 
-    private float spawnTimer = 0;
+    private float spawnTimer = 4f;
     private float spawnTimerMax = 4f;
     private int recipeMaxCount = 4;
     private int successfulRecipesCount = 0;
@@ -33,37 +33,49 @@ public class DeliveryManager : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy( this.gameObject );
         }
 
-        waitingRecipeList = new List<RecipeSO>();
+        waitingRecipeList = new List<RecipeSO>( );
     }
 
     private void Update( )
     {
-        if( KitchenGameManager.Instance.isGamePlaying( ) )
+        // Only Server Should spawn recipes
+        if ( !IsServer )
+            return;
+
+        if ( KitchenGameManager.Instance.isGamePlaying( ) )
             spawnTimer -= Time.deltaTime;
         if ( spawnTimer < 0 )
         {
             spawnTimer = spawnTimerMax;
             //Spawn the recipe
-            if(waitingRecipeList.Count < recipeMaxCount )
+            if ( waitingRecipeList.Count < recipeMaxCount )
             {
-                RecipeSO randomRecipe = validRecipeList.recipes[Random.Range( 0, validRecipeList.recipes.Count )];
-                OnRecipeSpawned?.Invoke(this, new RecipeInfoEventArgs  { recipeSO = randomRecipe });
-                waitingRecipeList.Add( randomRecipe );
+                int randomRecipeIndex = Random.Range( 0, validRecipeList.recipes.Count );
+                GenerateRecipeClientRpc( randomRecipeIndex );
             }
         }
     }
 
-    public void DeliverRecipe(PlateKitchenObject plate)
+    [ClientRpc]
+    public void GenerateRecipeClientRpc( int randomRecipeIndex )
+    {
+        RecipeSO randomRecipe = validRecipeList.recipes[randomRecipeIndex];
+        OnRecipeSpawned?.Invoke( this, new RecipeInfoEventArgs { recipeSO = randomRecipe } );
+        waitingRecipeList.Add( randomRecipe );
+    }
+
+    public void DeliverRecipe( PlateKitchenObject plate )
     {
         bool isIngredientMatch = false;
         bool isRecipeMatch = false;
 
-        foreach (RecipeSO recipe in waitingRecipeList )
+        for ( int i = 0; i < waitingRecipeList.Count; i++ )
         {
-            if(recipe.ingredients.Count == plate.GetKitchenObjectSOList().Count )
+            RecipeSO recipe = waitingRecipeList[i];
+            if ( recipe.ingredients.Count == plate.GetKitchenObjectSOList( ).Count )
             {
                 isRecipeMatch = true;
                 foreach ( KitchenObjectSO ingredient in recipe.ingredients )
@@ -85,18 +97,40 @@ public class DeliveryManager : MonoBehaviour
                 }
                 if ( isRecipeMatch )
                 {
-                    OnRecipeCompleted?.Invoke( this, new RecipeInfoEventArgs { recipeSO = recipe } );
-                    waitingRecipeList.Remove( recipe );
-                    OnDeliverySuccess?.Invoke(this, EventArgs.Empty );
-                    successfulRecipesCount++;
+                    DeliverySuccessServerRpc( i );
                     break;
                 }
             }
         }
         if ( !isRecipeMatch )
         {
-            OnDeliveryFailed?.Invoke( this, EventArgs.Empty );
+            DeliveryFailedServerRpc( );
         }
+    }
+    [ServerRpc( RequireOwnership = false )]
+    private void DeliverySuccessServerRpc( int recipeIndex )
+    {
+        DeliverySuccessClientRpc( recipeIndex );
+    }
+
+    [ClientRpc]
+    private void DeliverySuccessClientRpc( int recipeIndex )
+    {
+        OnRecipeCompleted?.Invoke( this, new RecipeInfoEventArgs { recipeSO = waitingRecipeList[recipeIndex] } );
+        waitingRecipeList.RemoveAt( recipeIndex );
+        OnDeliverySuccess?.Invoke( this, EventArgs.Empty );
+        successfulRecipesCount++;
+    }
+
+    [ServerRpc( RequireOwnership = false )]
+    private void DeliveryFailedServerRpc( )
+    {
+        DeliveryFailedClientRpc( );
+    }
+    [ClientRpc]
+    private void DeliveryFailedClientRpc( )
+    {
+        OnDeliveryFailed?.Invoke( this, EventArgs.Empty );
     }
 
     public List<RecipeSO> GetWaitingRecipeList( )

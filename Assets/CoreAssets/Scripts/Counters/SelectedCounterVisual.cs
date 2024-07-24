@@ -6,8 +6,25 @@ public class SelectedCounterVisual : MonoBehaviour
     [SerializeField] private GameObject[] selectedCounterVisualArray;
     private void Start( )
     {
-        //Player.Instance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
+        if ( Player.LocalInstance != null )
+        {
+            Player.LocalInstance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
+        }
+        else
+        {
+            Player.OnAnyPlayerJoin += Player_OnAnyPlayerJoin;
+        }
+
         HideSelectedCounterVisual( );
+    }
+
+    private void Player_OnAnyPlayerJoin( object sender, System.EventArgs e )
+    {
+        if ( Player.LocalInstance != null )
+        {
+            Player.LocalInstance.OnSelectedCounterChanged -= Instance_OnSelectedCounterChanged;
+            Player.LocalInstance.OnSelectedCounterChanged += Instance_OnSelectedCounterChanged;
+        }
     }
 
     private void Instance_OnSelectedCounterChanged( object sender, Player.OnSelectedCounterChangedEventArgs e )

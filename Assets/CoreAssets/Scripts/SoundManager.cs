@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public class SoundManager : MonoBehaviour
 {
@@ -16,17 +15,17 @@ public class SoundManager : MonoBehaviour
 
     private void Awake( )
     {
-        if(Instance == null )
+        if ( Instance == null )
         {
             Instance = this;
             DontDestroyOnLoad( this.gameObject );
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy( this.gameObject );
         }
 
-        InitializeVolume();
+        InitializeVolume( );
     }
 
     public void Start( )
@@ -46,7 +45,7 @@ public class SoundManager : MonoBehaviour
         musicAudioSource.volume = musicVolume;
         volumeMultiplier = PlayerPrefs.GetFloat( SFX_VOL, volumeMultiplier );
     }
-    
+
 
     private void TrashCounter_OnAnyTrashed( object sender, System.EventArgs e )
     {
@@ -62,52 +61,53 @@ public class SoundManager : MonoBehaviour
 
     private void Player_OnPickUpSomething( object sender, System.EventArgs e )
     {
-        //PlaySFX( audioRefSO.foodPickup, Player.Instance.transform.position );
+        Player player = sender as Player;
+        PlaySFX( audioRefSO.foodPickup, player.transform.position );
     }
 
     private void CuttingCounter_OnAnyCut( object sender, System.EventArgs e )
     {
         CuttingCounter cuttingCounter = sender as CuttingCounter;
-        PlaySFX( audioRefSO.chop,  cuttingCounter.transform.position);
+        PlaySFX( audioRefSO.chop, cuttingCounter.transform.position );
     }
 
     private void DeliveryManager_OnDeliverySuccess( object sender, System.EventArgs e )
     {
-        PlaySFX(audioRefSO.deliverySuccess, DeliveryCounter.Instance.transform.position );
+        PlaySFX( audioRefSO.deliverySuccess, DeliveryCounter.Instance.transform.position );
     }
 
     private void DeliveryManager_OnDeliveryFailed( object sender, System.EventArgs e )
     {
-        PlaySFX( audioRefSO.deliveryFail, DeliveryCounter.Instance.transform.position);
+        PlaySFX( audioRefSO.deliveryFail, DeliveryCounter.Instance.transform.position );
     }
 
-    public void PlayerFootStepsSound( Vector3 playerPosition, float volume)
+    public void PlayerFootStepsSound( Vector3 playerPosition, float volume )
     {
-        PlaySFX(audioRefSO.footStep, playerPosition, volume);
+        PlaySFX( audioRefSO.footStep, playerPosition, volume );
     }
     public void PlayCountDownSound( )
     {
         PlaySFX( audioRefSO.warning, Camera.main.transform.position );
     }
-    public void PlayWarningSound(Vector3 position)
+    public void PlayWarningSound( Vector3 position )
     {
         PlaySFX( audioRefSO.warning, position );
     }
 
-    private void PlaySFX(AudioClip[] clipArray, Vector3 position, float volume = 1f )
+    private void PlaySFX( AudioClip[] clipArray, Vector3 position, float volume = 1f )
     {
         PlaySFX( clipArray[UnityEngine.Random.Range( 0, clipArray.Length )], position, volume );
     }
     private void PlaySFX( AudioClip clip, Vector3 position, float volume = 1f )
     {
-        AudioSource.PlayClipAtPoint( clip, position, volume*volumeMultiplier );
+        AudioSource.PlayClipAtPoint( clip, position, volume * volumeMultiplier );
     }
 
     public void ChangeSoundEffectsVolume( )
     {
         volumeMultiplier += 0.1f;
 
-        if(volumeMultiplier > 1.05 )
+        if ( volumeMultiplier > 1.05 )
         {
             volumeMultiplier = 0;
         }

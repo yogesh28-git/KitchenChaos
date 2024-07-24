@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    //public static Player Instance { get; private set; }
-
+    public static Player LocalInstance { get; private set; }
+    public static event EventHandler OnAnyPlayerJoin;
     public static event EventHandler OnPickUpSomething;
 
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -27,20 +27,22 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
 
     private void Awake( )
     {
-        /*if ( Instance == null )
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy( gameObject );
-        }*/
 
     }
     private void Start( )
     {
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         GameInput.Instance.OnInteractAltAction += GameInput_OnInteractAltAction;
+    }
+
+    public override void OnNetworkSpawn( )
+    {
+        if ( IsOwner )
+        {
+            LocalInstance = this;
+        }
+
+        OnAnyPlayerJoin?.Invoke( this, EventArgs.Empty );
     }
 
     private void GameInput_OnInteractAction( object sender, EventArgs e )
@@ -153,6 +155,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public static void ResetStaticData( )
     {
         OnPickUpSomething = null;
+        OnAnyPlayerJoin = null;
     }
 
     #region Interface Methods
