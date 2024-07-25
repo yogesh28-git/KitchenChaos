@@ -187,5 +187,10 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         return kitchenObjectHoldTransform;
     }
 
+    public NetworkObject GetNetworkObject( )
+    {
+        return NetworkObject;
+    }
+
     #endregion
 }
