@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -28,7 +26,7 @@ public class KitchenObjectMultiplayer : NetworkBehaviour
         KitchenObject kitchenObject = Instantiate<KitchenObject>( kitchenObjectSO.prefab );
         kitchenObject.NetworkObject.Spawn( true );
 
-        if ( parentNetworkObjectReference.TryGet( out NetworkObject parentNetworkObject ))
+        if ( parentNetworkObjectReference.TryGet( out NetworkObject parentNetworkObject ) )
         {
             IKitchenObjectParent parentToAssign = parentNetworkObject.GetComponent<IKitchenObjectParent>( );
             if ( parentToAssign != null )
@@ -36,5 +34,28 @@ public class KitchenObjectMultiplayer : NetworkBehaviour
                 kitchenObject.SetKitchenObjectParent( parentToAssign );
             }
         }
+    }
+
+    public void DestroyKitchenObject( KitchenObject kitchenObject )
+    {
+        DestroyKitchenObjectServerRpc( kitchenObject.NetworkObject );
+    }
+
+    [ServerRpc(RequireOwnership = false )]
+    private void DestroyKitchenObjectServerRpc( NetworkObjectReference kitchenObjectNetworkObjectReference)
+    {
+        ClearKitchenObjectParentClientRpc( kitchenObjectNetworkObjectReference );
+
+        kitchenObjectNetworkObjectReference.TryGet( out NetworkObject kitchenObjectNetworkObject );
+        KitchenObject kitchenObject = kitchenObjectNetworkObject?.GetComponent<KitchenObject>( );
+        kitchenObject?.DestroySelf( );
+    }
+
+    [ClientRpc]
+    private void ClearKitchenObjectParentClientRpc( NetworkObjectReference kitchenObjectNetworkObjectReference )
+    {
+        kitchenObjectNetworkObjectReference.TryGet( out NetworkObject kitchenObjectNetworkObject );
+        KitchenObject kitchenObject = kitchenObjectNetworkObject?.GetComponent<KitchenObject>( );
+        kitchenObject.ClearKitchenObjectOnParent( );
     }
 }
