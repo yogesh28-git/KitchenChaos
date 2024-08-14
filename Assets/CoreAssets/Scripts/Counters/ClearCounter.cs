@@ -30,7 +30,7 @@ public class ClearCounter : BaseCounter
                     //Add the kitchen object that was on counter to the plate and destroy it from the counter
                     if ( plateKitchenObject.TryAddIngredient( GetKitchenObject( ).GetKitchenObjectSO( ) ) )
                     {
-                        GetKitchenObject( ).DestroySelf( );
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
                     }
                 }
                 else
@@ -41,7 +41,7 @@ public class ClearCounter : BaseCounter
                         //Add the kitchen object that was on player to the plate and destroy it from the player
                         if ( plateKitchenObject.TryAddIngredient( player.GetKitchenObject( ).GetKitchenObjectSO( ) ) )
                         {
-                            player.GetKitchenObject( ).DestroySelf( );
+                            KitchenObject.DestroyKitchenObject(player.GetKitchenObject( ));
                         }
                     }
                 }
