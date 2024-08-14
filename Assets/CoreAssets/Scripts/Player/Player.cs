@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,7 +19,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float rotSpeed = 15f;
     [SerializeField] private LayerMask counterLayer;
+    [SerializeField] private LayerMask collisionLayer;
     [SerializeField] private Transform kitchenObjectHoldTransform;
+    [SerializeField] private List<Vector3> spawnPositionsList;
 
     private Vector3 moveDir;
     private bool isWalking = false;
@@ -41,6 +44,8 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         {
             LocalInstance = this;
         }
+
+        transform.position = spawnPositionsList[(int)OwnerClientId];
 
         OnAnyPlayerJoin?.Invoke( this, EventArgs.Empty );
     }
@@ -111,19 +116,19 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         //Movement and Collision Detection
         float playerRadius = 0.4f;
         float playerHeight = 2f;
-        bool canMove = !Physics.CapsuleCast( transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, playerRadius );
+        bool canMove = !Physics.BoxCast( transform.position, Vector3.one * playerRadius, moveDir, Quaternion.identity, playerRadius, collisionLayer);
 
         if ( !canMove )
         {
             //Attempt X direction movement alone
             moveDir = new Vector3( inputVector.x, 0f, 0f ).normalized;
-            canMove = !Physics.CapsuleCast( transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, playerRadius );
+            canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDir, Quaternion.identity, playerRadius, collisionLayer);
 
             if ( !canMove )
             {
                 //Now attempt Z direction movement alone
                 moveDir = new Vector3( 0f, 0f, inputVector.y ).normalized;
-                canMove = !Physics.CapsuleCast( transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, playerRadius );
+                canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDir, Quaternion.identity, playerRadius, collisionLayer);
                 if ( !canMove )
                 {
                     moveDir = Vector3.zero;
