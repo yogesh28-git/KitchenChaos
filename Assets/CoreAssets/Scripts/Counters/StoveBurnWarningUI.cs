@@ -6,6 +6,7 @@ public class StoveBurnWarningUI : MonoBehaviour
 
     private void Start( )
     {
+        HideWarningUI( );
         stoveCounter.OnProgressChanged += StoveCounter_OnProgressChanged;
     }
     private void StoveCounter_OnProgressChanged( object sender, IHasProgress.OnProgressChangedEventArgs e )

@@ -4229,6 +4229,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoveCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 4384759606005267733, guid: 4af6778d23571b04693a4a1617ead518,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4468002335505525204, guid: 4af6778d23571b04693a4a1617ead518,
         type: 3}
       propertyPath: m_LocalPosition.x

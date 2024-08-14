@@ -28,7 +28,7 @@ public class StoveCounterSound : MonoBehaviour
 
     private void StoveCounterRef_OnStateChanged( object sender, StoveCounter.OnStateChangedEventArgs e )
     {
-        if(e.stoveState == StoveCounter.StoveState.Frying || e.stoveState == StoveCounter.StoveState.Fried)
+        if(e.stoveState == StoveCounter.StoveState.FRYING || e.stoveState == StoveCounter.StoveState.FRIED)
         {
             stoveAudioSource.Play( );
         }
