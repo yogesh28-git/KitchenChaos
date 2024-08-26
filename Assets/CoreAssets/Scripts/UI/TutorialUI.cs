@@ -21,16 +21,17 @@ public class TutorialUI : MonoBehaviour
         UpdateVisual( );
         Show( );
 
-        KitchenGameManager.Instance.OnStateChanged += KitchenGameManager_OnStateChanged;
+        KitchenGameManager.Instance.OnLocalPlayerReadyChanged += KitchenGameManager_OnLocalPlayerReadyChanged;
     }
 
-    private void KitchenGameManager_OnStateChanged( object sender, System.EventArgs e )
+    private void KitchenGameManager_OnLocalPlayerReadyChanged( object sender, System.EventArgs e )
     {
-        if ( KitchenGameManager.Instance.isCountDownActive( ) )
+        if(KitchenGameManager.Instance.IsLocalPlayerReady( ) )
         {
             Hide( );
         }
     }
+
 
     private void UpdateVisual( )
     {
