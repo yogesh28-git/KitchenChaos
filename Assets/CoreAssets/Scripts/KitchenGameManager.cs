@@ -11,6 +11,8 @@ public class KitchenGameManager : NetworkBehaviour
     public event EventHandler OnStateChanged;
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
+    public event EventHandler OnLocalPaused;
+    public event EventHandler OnLocalUnpaused;
     public event EventHandler OnLocalPlayerReadyChanged;
 
     public enum GameState
@@ -22,14 +24,16 @@ public class KitchenGameManager : NetworkBehaviour
     }
 
     private Dictionary<ulong, bool> playerReadyDictionary;
+    private Dictionary<ulong, bool> gamePausedDictionary;
 
     private NetworkVariable<GameState> state = new NetworkVariable<GameState>(GameState.WAITING);
     private bool isLocalPlayerReady = false;
 
     private NetworkVariable<float> countDownTimer = new NetworkVariable<float>(3f);
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
+    private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>( false);
     private float gamePlayingTimerMax = 10f;
-    private bool isPaused = false;
+    private bool isLocalPaused = false;
 
     private void Awake( )
     {
@@ -49,11 +53,27 @@ public class KitchenGameManager : NetworkBehaviour
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
+        gamePausedDictionary = new Dictionary<ulong, bool>();
     }
 
     public override void OnNetworkSpawn( )
     {
         state.OnValueChanged += State_OnValueChanged;
+        isGamePaused.OnValueChanged += IsGamePaused_OnValueChanged;
+    }
+
+    private void IsGamePaused_OnValueChanged( bool previousValue, bool newValue )
+    {
+        if ( isGamePaused.Value )
+        {
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke( this, EventArgs.Empty );
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnGameUnpaused?.Invoke( this, EventArgs.Empty );
+        }
     }
 
     private void State_OnValueChanged( GameState previousValue, GameState newValue )
@@ -98,6 +118,30 @@ public class KitchenGameManager : NetworkBehaviour
         TogglePause( );
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetGamePausedServerRPC(ServerRpcParams serverRpcParams = default )
+    {
+        if ( !gamePausedDictionary.ContainsKey( serverRpcParams.Receive.SenderClientId ))
+        {
+            gamePausedDictionary[serverRpcParams.Receive.SenderClientId] = false;
+        }
+
+        // Toggle pause for that client
+        gamePausedDictionary[serverRpcParams.Receive.SenderClientId] = !gamePausedDictionary[serverRpcParams.Receive.SenderClientId];
+
+        // Check if all clients are unpaused or even one of them is paused.
+        bool allClientsUnpaused = true;
+        foreach ( ulong clientId in NetworkManager.Singleton.ConnectedClientsIds )
+        {
+            if ( !gamePausedDictionary.ContainsKey( clientId ) || gamePausedDictionary[clientId] )
+            {
+                allClientsUnpaused = false;
+            }
+        }
+
+        isGamePaused.Value = !allClientsUnpaused;
+    }
+
     private void Update( )
     {
         if ( !IsServer )
@@ -129,6 +173,22 @@ public class KitchenGameManager : NetworkBehaviour
         }
     }
 
+    public void TogglePause( )
+    {
+        isLocalPaused = !isLocalPaused;
+
+        if ( isLocalPaused )
+        {
+            OnLocalPaused?.Invoke( this, EventArgs.Empty );
+        }
+        else
+        {
+            OnLocalUnpaused?.Invoke( this, EventArgs.Empty );
+        }
+
+        SetGamePausedServerRPC( );
+    }
+
     public bool isCountDownActive()
     {
         return state.Value == GameState.COUNT_DOWN;
@@ -153,21 +213,5 @@ public class KitchenGameManager : NetworkBehaviour
     public float GetGamePlayingTimerNormalized( )
     {
         return 1 - ( gamePlayingTimer.Value / gamePlayingTimerMax );
-    }
-
-    public void TogglePause( )
-    {
-        isPaused = !isPaused;
-
-        if ( isPaused )
-        {
-            Time.timeScale = 0f;
-            OnGamePaused?.Invoke(this, EventArgs.Empty);
-        }
-        else
-        {
-            Time.timeScale = 1f;
-            OnGameUnpaused?.Invoke( this, EventArgs.Empty );
-        }
     }
 }
