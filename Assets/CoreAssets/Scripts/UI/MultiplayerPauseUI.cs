@@ -19,6 +19,7 @@ public class MultiplayerPauseUI : MonoBehaviour
 
     private void KitchenGameManager_OnGameUnpaused( object sender, System.EventArgs e )
     {
+        Debug.Log( "Hide" );
         Hide( );
     }
 
@@ -33,6 +34,6 @@ public class MultiplayerPauseUI : MonoBehaviour
     }
     private void Hide( )
     {
-        this .gameObject.SetActive( false );
+        this.gameObject.SetActive( false );
     }
 }

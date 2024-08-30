@@ -36,6 +36,17 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     {
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         GameInput.Instance.OnInteractAltAction += GameInput_OnInteractAltAction;
+
+        if(IsServer)
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback( ulong clientId )
+    {
+        if(clientId == OwnerClientId && HasKitchenObject( ) )
+        {
+            KitchenObject.DestroyKitchenObject( GetKitchenObject( ) );
+        }
     }
 
     public override void OnNetworkSpawn( )

@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,7 @@ public class PauseMenuUI : MonoBehaviour
         } );
         mainMenuButton.onClick.AddListener( ( ) =>
         {
+            NetworkManager.Singleton.Shutdown( );
             SceneLoader.Load( SceneLoader.Scenes.MainMenuScene );
         } );
     }

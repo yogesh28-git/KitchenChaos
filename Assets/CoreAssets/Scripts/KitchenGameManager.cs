@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.PackageManager;
 
 public class KitchenGameManager : NetworkBehaviour
 {
@@ -34,6 +35,7 @@ public class KitchenGameManager : NetworkBehaviour
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>( false);
     private float gamePlayingTimerMax = 10f;
     private bool isLocalPaused = false;
+    private bool autoUnpauseCheck = false;
 
     private void Awake( )
     {
@@ -53,13 +55,22 @@ public class KitchenGameManager : NetworkBehaviour
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
-        gamePausedDictionary = new Dictionary<ulong, bool>();
+        gamePausedDictionary = new Dictionary<ulong, bool>();           
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback( ulong obj )
+    {
+        Time.timeScale = 1f;
+        autoUnpauseCheck = true;
     }
 
     public override void OnNetworkSpawn( )
     {
         state.OnValueChanged += State_OnValueChanged;
         isGamePaused.OnValueChanged += IsGamePaused_OnValueChanged;
+
+        if ( IsServer )
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
     }
 
     private void IsGamePaused_OnValueChanged( bool previousValue, bool newValue )
@@ -129,11 +140,17 @@ public class KitchenGameManager : NetworkBehaviour
         // Toggle pause for that client
         gamePausedDictionary[serverRpcParams.Receive.SenderClientId] = !gamePausedDictionary[serverRpcParams.Receive.SenderClientId];
 
+        CheckGamePausedServerRPC();
+    }
+
+    [ServerRpc]
+    private void CheckGamePausedServerRPC( )
+    {
         // Check if all clients are unpaused or even one of them is paused.
         bool allClientsUnpaused = true;
         foreach ( ulong clientId in NetworkManager.Singleton.ConnectedClientsIds )
         {
-            if ( !gamePausedDictionary.ContainsKey( clientId ) || gamePausedDictionary[clientId] )
+            if ( gamePausedDictionary.ContainsKey( clientId ) && gamePausedDictionary[clientId] )
             {
                 allClientsUnpaused = false;
             }
@@ -170,6 +187,15 @@ public class KitchenGameManager : NetworkBehaviour
                 break;
             case GameState.GAMEOVER:
                 break;
+        }
+    }
+
+    private void LateUpdate( )
+    {
+        if ( autoUnpauseCheck )
+        {
+            autoUnpauseCheck = false;
+            CheckGamePausedServerRPC( );
         }
     }
 
